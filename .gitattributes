@@ -1,0 +1,7 @@
+# 统一换行：文本入库用 LF，批处理保留 CRLF（cmd 需要 CRLF 才能正确解析）
+* text=auto
+*.bat -text
+*.exe binary
+*.ico binary
+*.zip binary
+*.png binary

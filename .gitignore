@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# PyInstaller 中间产物（成品在 dist/ 下）
+build/
+*.spec
+
+# 便携版解包目录（成品为 dist/八字命理通鉴-便携版.zip）
+dist-portable/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

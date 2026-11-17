@@ -8,7 +8,7 @@ from tkinter import filedialog, messagebox, ttk
 
 from lunar_python import Lunar
 
-from . import biorhythm, calendar_core as cc, chart as cht, chengku, hehun
+from . import biorhythm, calendar_core as cc, chart as cht, chengku, hehun, liuyao, ziwei
 
 FONT = "Microsoft YaHei UI"
 MONO = "NSimSun"
@@ -709,6 +709,134 @@ class BiorhythmFrame(ttk.Frame):
 
 
 # --------------------------------------------------------------------------- #
+# 紫微斗数
+# --------------------------------------------------------------------------- #
+class ZiweiFrame(ttk.Frame):
+    def __init__(self, master, app):
+        super().__init__(master, padding=8)
+        self.app = app
+        top = ttk.Frame(self)
+        top.pack(fill="x")
+        ttk.Label(top, text="姓名").pack(side="left")
+        self.name = tk.StringVar()
+        ttk.Entry(top, textvariable=self.name, width=8).pack(side="left", padx=(2, 10))
+        ttk.Label(top, text="性别").pack(side="left")
+        self.gender = tk.StringVar(value="男")
+        for g in ("男", "女"):
+            ttk.Radiobutton(top, text=g, value=g, variable=self.gender).pack(side="left")
+        ttk.Label(top, text="　出生").pack(side="left", padx=(8, 4))
+        self.date = DateInput(top, allow_lunar=True, allow_unknown_hour=True)
+        self.date.pack(side="left")
+
+        ttk.Button(self, text="紫 微 排 盘", command=self.compute).pack(pady=8)
+        box = ttk.LabelFrame(self, text="紫微斗数命盘", padding=4)
+        box.pack(fill="both", expand=True)
+        self.text = scrolled_text(box)
+        self.text.configure(state="disabled")
+
+    def compute(self):
+        if self.date.mode == "unknown":
+            messagebox.showinfo("缺少时辰", "紫微斗数安命宫、身宫须有出生时辰，\n"
+                                        "请取消「时辰不详」，改选十二时辰之一。")
+            return
+        try:
+            dt = self.date.get()
+        except ValueError as e:
+            messagebox.showerror("输入有误", str(e))
+            return
+        hour_label = f"{dt:%Y-%m-%d} {self.date.shichen_text}" if self.date.mode == "shichen" else ""
+        ch = ziwei.build(dt, self.gender.get())
+        s = ziwei.render(ch, hour_label)
+        if self.name.get().strip():
+            s = s.replace("【紫微斗数】", f"【紫微斗数】{self.name.get().strip()}　", 1)
+        if self.date.mode == "shichen":
+            s += (f"\n　※ 出生时辰只记到「{self.date.shichen_text}」，命宫、身宫已由该时辰唯一确定；"
+                  "时系星曜（文昌文曲、地空地劫、台辅封诰、火铃）按该时辰中点起。")
+        self._show(s)
+
+    def _show(self, s: str):
+        self.text.configure(state="normal")
+        self.text.delete("1.0", "end")
+        self.text.insert("end", s)
+        self.text.configure(state="disabled")
+
+
+# --------------------------------------------------------------------------- #
+# 六爻
+# --------------------------------------------------------------------------- #
+class LiuyaoFrame(ttk.Frame):
+    KINDS = ["财运", "事业", "考试", "感情", "婚姻", "健康", "出行",
+             "文书", "子女", "兄弟", "官司", "失物"]
+    METHODS = ["摇钱起卦", "手动输入", "时间起卦"]
+
+    def __init__(self, master, app):
+        super().__init__(master, padding=8)
+        self.app = app
+        box = ttk.LabelFrame(self, text="起卦", padding=8)
+        box.pack(fill="x")
+        ttk.Label(box, text="占问").grid(row=0, column=0, sticky="w")
+        self.v_kind = tk.StringVar(value="财运")
+        ttk.Combobox(box, textvariable=self.v_kind, values=self.KINDS, width=8,
+                     state="readonly").grid(row=0, column=1, sticky="w", padx=(2, 12))
+        ttk.Label(box, text="起卦方式").grid(row=0, column=2, sticky="w")
+        self.v_method = tk.StringVar(value="摇钱起卦")
+        cb = ttk.Combobox(box, textvariable=self.v_method, values=self.METHODS,
+                          width=10, state="readonly")
+        cb.grid(row=0, column=3, sticky="w", padx=(2, 12))
+        cb.bind("<<ComboboxSelected>>", self._on_method)
+        ttk.Label(box, text="手动六爻").grid(row=0, column=4, sticky="w")
+        self.v_lines = tk.StringVar(value="789789")
+        self.e_lines = ttk.Entry(box, textvariable=self.v_lines, width=10, state="disabled")
+        self.e_lines.grid(row=0, column=5, sticky="w", padx=(2, 12))
+
+        ttk.Label(box, text="起卦时间").grid(row=1, column=0, sticky="w", pady=(8, 0))
+        self.v_when = tk.StringVar(value=datetime.now().strftime("%Y-%m-%d %H:%M"))
+        ttk.Entry(box, textvariable=self.v_when, width=18).grid(
+            row=1, column=1, columnspan=2, sticky="w", padx=(2, 12), pady=(8, 0))
+        ttk.Button(box, text="现在", width=6, command=self.set_now).grid(
+            row=1, column=3, sticky="w", pady=(8, 0))
+        ttk.Label(box, text="（手动输入按「初爻到上爻」6 位：6 老阴 7 少阳 8 少阴 9 老阳）",
+                  foreground="#666").grid(row=1, column=4, columnspan=2, sticky="w", pady=(8, 0))
+
+        ttk.Button(self, text="起 卦", command=self.compute).pack(pady=8)
+        out = ttk.LabelFrame(self, text="卦象与断语", padding=4)
+        out.pack(fill="both", expand=True)
+        self.text = scrolled_text(out)
+        self.text.configure(state="disabled")
+
+    def _on_method(self, _e=None):
+        self.e_lines.configure(state="normal" if self.v_method.get() == "手动输入" else "disabled")
+
+    def set_now(self):
+        self.v_when.set(datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+    def compute(self):
+        try:
+            when = datetime.strptime(self.v_when.get().strip(), "%Y-%m-%d %H:%M")
+        except ValueError:
+            messagebox.showerror("时间有误", "起卦时间格式应为 YYYY-MM-DD HH:MM")
+            return
+        method = self.v_method.get()
+        try:
+            if method == "摇钱起卦":
+                lines = liuyao.cast_coins()
+            elif method == "时间起卦":
+                lines = liuyao.cast_time(when)
+            else:
+                lines = liuyao.from_coins_text(self.v_lines.get())
+        except ValueError as e:
+            messagebox.showerror("输入有误", str(e))
+            return
+        c = liuyao.build(method, lines, when, self.v_kind.get())
+        s = liuyao.render(c)
+        s += f"\n　※ 六爻数（初→上）：{''.join(map(str, lines))}　7/8 静爻，9/6 动爻。"
+        self.text.configure(state="normal")
+        self.text.delete("1.0", "end")
+        self.text.insert("end", s)
+        self.text.configure(state="disabled")
+
+
+# --------------------------------------------------------------------------- #
 # 主窗口
 # --------------------------------------------------------------------------- #
 def setup_dpi() -> float:
@@ -726,7 +854,7 @@ class App(tk.Tk):
         self.scale = setup_dpi()
         super().__init__()
         self.tk.call("tk", "scaling", 1.3333 * self.scale)
-        self.title("八字命理通鉴 · 万年历 / 八字 / 称骨 / 合婚 / 生物钟")
+        self.title("八字命理通鉴 · 万年历 / 八字 / 紫微 / 六爻 / 称骨 / 合婚 / 生物钟")
         sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
         w, h = min(int(1180 * self.scale), sw - 40), min(int(700 * self.scale), sh - 90)
         self.geometry(f"{w}x{h}+{(sw - w) // 2}+{max(0, (sh - h) // 2 - 20)}")
@@ -743,6 +871,7 @@ class App(tk.Tk):
         nb.pack(fill="both", expand=True, padx=6, pady=6)
         self.frames = {}
         for name, cls in [("万年历", CalendarFrame), ("八字排盘", BaziFrame),
+                          ("紫微斗数", ZiweiFrame), ("六爻", LiuyaoFrame),
                           ("称骨算命", ChengkuFrame), ("八字合婚", HehunFrame),
                           ("生物钟", BiorhythmFrame)]:
             f = cls(nb, self)

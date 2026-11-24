@@ -153,11 +153,64 @@ def kong_wang(gz: str) -> str:
 
 LIUSHEN = ["青龙", "朱雀", "勾陈", "螣蛇", "白虎", "玄武"]
 
+# 进神/退神（《增删卜易·化进化退》）：同五行顺行为进，逆行为退
+JIN = {"寅": "卯", "巳": "午", "申": "酉", "亥": "子", "丑": "辰", "辰": "未", "未": "戌", "戌": "丑"}
+TUI = {v: k for k, v in JIN.items()}
+
+# 卦义（《周易》卦辞大意，一句话）
+GUA_YI = {
+    "乾为天": "刚健中正，自强不息", "坤为地": "厚德载物，柔顺承天",
+    "水雷屯": "初生艰难，宜守待时", "山水蒙": "蒙昧待启，宜求师问道",
+    "水天需": "需待时机，不宜躁进", "天水讼": "争讼之象，宜和解退让",
+    "地水师": "用众之象，宜纪律严明", "水地比": "亲比相辅，宜择善而从",
+    "风天小畜": "小有积蓄，宜积微成著", "天泽履": "履道慎行，宜守礼防险",
+    "地天泰": "天地交泰，通达安顺", "天地否": "闭塞不通，宜守正待变",
+    "天火同人": "同心同德，宜协力求成", "火天大有": "大有所获，宜谦守恒盈",
+    "地山谦": "谦德受益，宜卑以自牧", "雷地豫": "顺时而动，宜预备戒逸",
+    "泽雷随": "随顺时势，宜择善而随", "山风蛊": "积弊待治，宜革故鼎新",
+    "地泽临": "临事而惧，宜宽厚待下", "风地观": "观仰瞻视，宜静察待机",
+    "火雷噬嗑": "啮合除梗，宜明断是非", "山火贲": "文饰之美，宜质胜于华",
+    "山地剥": "剥落衰退，宜守静防倾", "地雷复": "一阳来复，宜循序渐进",
+    "天雷无妄": "无妄之诚，宜守正勿贪", "山天大畜": "大有蓄养，宜厚积薄发",
+    "山雷颐": "颐养之道，宜慎言节食", "泽风大过": "太过之象，宜非常之举",
+    "坎为水": "重险陷阻，宜诚信涉险", "离为火": "附丽光明，宜柔顺中正",
+    "泽山咸": "感应相通，宜以诚相感", "雷风恒": "恒久之道，宜守常不移",
+    "天山遁": "退避隐遁，宜远离小人", "雷天大壮": "壮盛之象，宜守正勿恃",
+    "火地晋": "晋升之日，宜柔进上行", "地火明夷": "明夷受伤，宜藏晦自守",
+    "风火家人": "家道齐整，宜正家修身", "火泽睽": "睽违异趣，宜求同存异",
+    "水山蹇": "蹇难险阻，宜反身修德", "雷水解": "解除险难，宜及时除弊",
+    "山泽损": "损下益上，宜损己利人", "风雷益": "增益之象，宜见善则迁",
+    "泽天夬": "决断果行，宜明示警戒", "天风姤": "邂逅相遇，宜防微杜渐",
+    "泽地萃": "荟萃聚集，宜聚众以正", "地风升": "升进之象，宜积小高大",
+    "泽水困": "困厄之象，宜守正待通", "水风井": "井养不穷，宜修己利人",
+    "泽火革": "变革之象，宜顺时改易", "火风鼎": "鼎新之象，宜稳重调和",
+    "震为雷": "震动惊惧，宜临危不乱", "艮为山": "止而不进，宜知止静守",
+    "风山渐": "渐进有序，宜循序不躁", "雷泽归妹": "归嫁之象，宜守分慎动",
+    "雷火丰": "丰盛之象，宜盛时思忧", "火山旅": "旅居漂泊，宜柔顺自处",
+    "巽为风": "顺入之象，宜谦逊申命", "兑为泽": "喜悦之象，宜和悦以正",
+    "风水涣": "涣散之象，宜聚人心", "水泽节": "节制之象，宜适度守分",
+    "风泽中孚": "中孚诚信，宜以诚感人", "雷山小过": "小过之象，宜谦下慎微",
+    "水火既济": "事已初成，宜守成防乱", "火水未济": "事未完成，宜审慎图终",
+}
+
 
 def liushen_of_day(day_gan: str) -> list[str]:
     """六神起例：甲乙起青龙、丙丁起朱雀、戊起勾陈、己起螣蛇、庚辛起白虎、壬癸起玄武。"""
     head = {"甲": 0, "乙": 0, "丙": 1, "丁": 1, "戊": 2, "己": 3, "庚": 4, "辛": 4, "壬": 5, "癸": 5}[day_gan]
     return [LIUSHEN[(head + i) % 6] for i in range(6)]
+
+
+def _rel_wx(a: str, b: str) -> str:
+    """五行 a 对 b 的关系：同 / 生（a 生 b）/ 克（a 克 b）/ 攻（b 克 a）/ 养（b 生 a）。"""
+    if a == b:
+        return "同"
+    if WX_SHENG[a] == b:
+        return "生"
+    if WX_KE[a] == b:
+        return "克"
+    if WX_KE[b] == a:
+        return "攻"
+    return "养"
 
 
 def wangshuai(x: str, ling: str) -> str:
@@ -241,6 +294,8 @@ class Line:
     bian_liuqin: str = ""
     bian_wx: str = ""
     ping: str = ""           # 断语
+    shensha: list = field(default_factory=list)   # 神煞（按日干/日支查）
+    jin_tui: str = ""        # 化进神 / 化退神
 
     @property
     def wx(self) -> str:
@@ -274,6 +329,7 @@ class Cast:
     score: int
     notes: list[str] = field(default_factory=list)
     fushen: list[tuple[int, str, str]] = field(default_factory=list)  # (爻位, 六亲, 干支)
+    details: dict = field(default_factory=dict)
 
 
 def build(method: str, lines: list[int], when: datetime,
@@ -315,6 +371,13 @@ def build(method: str, lines: list[int], when: datetime,
                   bian_gz=bian_gz,
                   bian_liuqin=liuqin(bian.wx, zhi_wx(bian_gz)) if bian_gz else "",
                   bian_wx=zhi_wx(bian_gz) if bian_gz else "")
+        ln.shensha = _shensha_of(gz[-1], day_gz[0], day_zhi)
+        if bian_gz:
+            a, b = gz[-1], bian_gz[-1]
+            if JIN.get(a) == b:
+                ln.jin_tui = "化进神"
+            elif TUI.get(a) == b:
+                ln.jin_tui = "化退神"
         rows.append(ln)
 
     yong = YONGSHEN.get(question, "世爻")
@@ -339,10 +402,98 @@ def build(method: str, lines: list[int], when: datetime,
 
     score, notes = _judge(rows, yong_line, yong, kong, month_zhi, day_zhi, ben, bian, shi)
     verdict = "吉" if score >= 3 else ("凶" if score <= -3 else "平")
+    det = _details(rows, yong_line, yong, fushen, ben, bian, shi, ying, kong, month_zhi, day_zhi)
     cast = Cast(method=method, when=when, day_gz=day_gz, month_gz=month_gz, year_gz=year_gz,
                 xunkong=kong, ben=ben, bian=bian, lines=rows, question=question,
-                yongshen=yong_desc, verdict=verdict, score=score, notes=notes, fushen=fushen)
+                yongshen=yong_desc, verdict=verdict, score=score, notes=notes, fushen=fushen,
+                details=det)
     return cast
+
+
+# --------------------------------------------------------------------------- #
+# 细则：神煞、卦义、世应、三合、反吟伏吟、应期
+# --------------------------------------------------------------------------- #
+def _shensha_of(zhi: str, day_gan: str, day_zhi: str) -> list[str]:
+    out = []
+    if zhi in C.TIANYI.get(day_gan, ""):
+        out.append("天乙")
+    for table, name in ((C.YIMA, "驿马"), (C.TAOHUA, "桃花"), (C.HUAGAI, "华盖"),
+                        (C.JIANGXING, "将星"), (C.JIESHA, "劫煞")):
+        if zhi == table.get(day_zhi):
+            out.append(name)
+    return out
+
+
+def _details(rows, yong, yong_name, fushen, ben, bian, shi, ying, kong, month_zhi, day_zhi) -> dict:
+    d = {}
+    # 卦义
+    d["guayi"] = [f"本卦《{ben.name}》：{GUA_YI.get(ben.name, '')}"]
+    if bian is not None:
+        d["guayi"].append(f"变卦《{bian.name}》：{GUA_YI.get(bian.name, '')}（事之归趋）")
+    # 世应
+    s_line, y_line = rows[shi - 1], rows[ying - 1]
+    rel = {"同": "比和，彼此相当", "生": "世生应，主我付出、求人费力",
+           "克": "世克应，主我能制事、可掌控", "攻": "应克世，主受制于人、压力在外",
+           "养": "应生世，主得对方助力"}[_rel_wx(s_line.wx, y_line.wx)]
+    d["shiying"] = [f"世爻 {s_line.liuqin}{s_line.gz}（{s_line.wang}）　应爻 {y_line.liuqin}{y_line.gz}（{y_line.wang}）",
+                    f"世应关系：{rel}。"]
+    # 三合、三会（动爻与日月）
+    pool = {r.gz[-1] for r in rows if r.dong} | {day_zhi, month_zhi}
+    san = []
+    for trio in C.SANHE:
+        if all(z in pool for z in trio):
+            wx = {"申子辰": "水", "亥卯未": "木", "寅午戌": "火", "巳酉丑": "金"}["".join(trio)]
+            san.append(f"卦中动爻与日月会{trio[0]}{trio[1]}{trio[2]}三合{wx}局，气势偏聚于{wx}。")
+    for trio in (("寅", "卯", "辰", "木"), ("巳", "午", "未", "火"),
+                 ("申", "酉", "戌", "金"), ("亥", "子", "丑", "水")):
+        if all(z in pool for z in trio[:3]):
+            san.append(f"又见{trio[0]}{trio[1]}{trio[2]}三会{trio[3]}局，方局力大。")
+    if not san:
+        san.append("动爻与日月未见三合、三会成局。")
+    d["sanhe"] = san
+    # 反吟伏吟
+    fanfu = []
+    if bian is not None:
+        pairs = [(rows[i].gz[-1], rows[i].bian_gz[-1]) for i in range(6) if rows[i].bian_gz]
+        if pairs and all(frozenset(p) in LIUCHONG_PAIRS for p in pairs):
+            fanfu.append("变卦与本卦六爻皆冲，为「反吟」，主事多反复、成而复败。")
+        if pairs and all(p[0] == p[1] for p in pairs):
+            fanfu.append("变卦与本卦纳甲相同，为「伏吟」，主事体凝滞、原地打转。")
+        jt = [r for r in rows if r.jin_tui]
+        if jt:
+            fanfu += [f"第 {r.pos} 爻{r.liuqin}{r.gz}化{r.bian_gz}，{r.jin_tui}。" for r in jt]
+    if not fanfu:
+        fanfu.append("六爻动变无进退化、无反吟伏吟，事体平顺推进。")
+    d["bianhua"] = fanfu
+    # 用神取用
+    use = []
+    same = [r for r in rows if r.liuqin == yong_name]
+    if len(same) > 1:
+        use.append(f"用神{yong_name}两现（" + "、".join(f"第{r.pos}爻" for r in same)
+                   + "），取动者、临世者、旺者为断。")
+    if fushen:
+        use.append(f"用神不上卦，伏于第 {fushen[0][0]} 爻 {fushen[0][2]}："
+                   f"须得月建日辰生扶，或飞神（本宫同位之爻）空破墓绝，伏神方能透出。")
+    if yong is not None:
+        use.append(f"用神{yong_name}临第 {yong.pos} 爻（{yong.gz}·{yong.wang}"
+                   + ("·旬空" if yong.kong else "") + ("·月破" if yong.yuepo else "") + "）。")
+    d["yongshen"] = use
+    # 应期
+    if yong is None:
+        d["yingqi"] = ["用神伏藏，应期待伏神值日、或飞神受制之期，事多迟滞。"]
+    else:
+        z = yong.gz[-1]
+        out = []
+        if yong.kong:
+            out.append(f"用神旬空（空 {kong}），应期在出空之月日：{z} 值日或冲{z}之月日。")
+        if yong.yuepo:
+            out.append(f"用神月破，应期在填实之月（{z} 月）或与{z}相合之月。")
+        if yong.dong and yong.bian_gz:
+            out.append(f"用神发动化{yong.bian_gz}，应期多在变爻「{yong.bian_gz[-1]}」值日值月之期。")
+        if not out:
+            out.append(f"用神安静，以用神地支「{z}」值日、值月为应，或合用神之期。")
+        d["yingqi"] = out
+    return d
 
 
 def _judge(rows: list[Line], yong: Line | None, yong_name: str, kong: str,
@@ -476,9 +627,27 @@ def render(c: Cast) -> str:
                  + _pad(flags or "－", 9)
                  + _pad("▅▅▅▅▅" if r.yinyang else "▅▅　▅▅", 12)
                  + _pad(r.shi_ying or "－", 5) + mark)
-    L += ["", f"　【用神】{c.yongshen}", f"　【断】{c.verdict}（评分 {c.score:+d}）"]
+    L += ["", f"　【卦义】"]
+    L += [f"　　· {x}" for x in c.details.get("guayi", [])]
+    L.append("")
+    L.append(f"　【用神】{c.yongshen}")
+    L += [f"　　· {x}" for x in c.details.get("yongshen", [])]
+    L.append(f"　【断】{c.verdict}（评分 {c.score:+d}）")
     for n in c.notes:
         L.append(f"　　· {n}")
+    L.append("")
+    L.append("　【世应】")
+    L += [f"　　· {x}" for x in c.details.get("shiying", [])]
+    L.append("　【动变】")
+    L += [f"　　· {x}" for x in c.details.get("bianhua", [])]
+    L.append("　【合会】")
+    L += [f"　　· {x}" for x in c.details.get("sanhe", [])]
+    L.append("　【应期】")
+    L += [f"　　· {x}" for x in c.details.get("yingqi", [])]
+    shen = [(r.pos, r.shensha) for r in c.lines if r.shensha]
+    L.append("　【神煞】" + ("；".join(
+        f"{yao_title(pos, c.lines[pos - 1].yinyang)}（{c.lines[pos - 1].gz}）{'、'.join(names)}"
+        for pos, names in shen) if shen else "六爻所临皆无神煞。"))
     L += ["", "　※ 六爻以用神为断事之枢：用神旺相、不受冲克、动而化吉则事成。"
-              "本程序依《增删卜易》体例作规则化简断，未及神煞、飞神之细，结论仅供参考。"]
+              "本程序依《增删卜易》《卜筮正宗》体例作规则化简断，结论仅供参考。"]
     return "\n".join(L)

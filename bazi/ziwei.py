@@ -63,7 +63,73 @@ STAR_MEANING = {
     "天府": "库储、稳重、保守", "太阴": "阴柔、内敛、不动产", "贪狼": "欲望、才艺、桃花",
     "巨门": "口舌、暗昧、专业", "天相": "辅佐、公正、外貌", "天梁": "荫庇、老成、医药",
     "七杀": "肃杀、开创、独断", "破军": "破旧立新、变动、损耗",
+    "文昌": "文才、考试、条理", "文曲": "口才、才艺、风雅", "左辅": "助力、辅佐、忠厚",
+    "右弼": "助力、人缘、机变", "天魁": "阳贵、机遇、男性长辈", "天钺": "阴贵、机遇、女性长辈",
+    "禄存": "财禄、保守、孤守", "擎羊": "刑伤、刚烈、决断", "陀罗": "拖磨、固执、暗耗",
+    "火星": "急躁、突发、虚惊", "铃星": "暴烈、惊扰、急变", "地空": "空想、幻灭、灵感",
+    "地劫": "破耗、掠夺、意外", "天马": "奔波、迁徙、变动", "红鸾": "婚喜、魅力",
+    "天喜": "喜庆、添丁", "天刑": "刑法、疾病、自律", "天姚": "风情、交际、暗昧",
+    "华盖": "孤高、艺术、宗教", "咸池": "桃花、情欲", "天哭": "悲忧、刑克",
+    "天虚": "虚耗、空亡", "孤辰": "孤独、刑克", "寡宿": "孤寂、寡合",
+    "破碎": "破损、不成", "三台": "地位、名声", "八座": "地位、清贵",
+    "恩光": "殊荣、恩赐", "天贵": "贵气、助力", "台辅": "辅弼、清望",
+    "封诰": "封赏、荣典", "天月": "疾病、缠延", "天巫": "升迁、宗教",
+    "阴煞": "暗害、小人", "解神": "解厄、消灾", "天厨": "禄食、口福",
+    "天官": "仕宦、贵显", "天福": "福禄、安逸", "天才": "天才、智慧",
+    "天寿": "长寿、稳重", "龙池": "文雅、异性缘", "凤阁": "华美、清秀",
+    "蜚廉": "小人、口舌", "天伤": "伤损、内耗", "天使": "疾病、催逼",
+    "天德": "福德、解厄", "月德": "福德、柔和", "旬空": "虚而不实",
 }
+
+# 星曜庙旺利陷（与 iztro 亮度表逐格一致；寅宫起为序，四生宫无亮度者留空）
+BRIGHT = {
+    "紫微": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "平庙旺旺得旺庙庙旺旺得旺")),
+    "天机": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙陷得旺利平庙陷得旺利平")),
+    "太阳": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "陷不旺庙旺旺旺得得平不陷")),
+    "武曲": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "旺庙得利庙平旺庙得利庙平")),
+    "天同": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "旺不利平平庙陷不旺平平庙")),
+    "廉贞": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "平利庙平利陷平利庙平利陷")),
+    "天府": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙庙庙得庙得旺庙得旺庙得")),
+    "太阴": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙庙旺陷陷陷不不利旺旺庙")),
+    "贪狼": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "旺庙平利庙陷旺庙平利庙陷")),
+    "巨门": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "旺不庙庙陷旺旺不庙庙陷旺")),
+    "天相": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙庙庙陷得得庙得庙陷得得")),
+    "天梁": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙旺庙庙庙陷庙旺陷得庙陷")),
+    "七杀": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "旺庙庙旺庙平旺庙庙旺庙平")),
+    "破军": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "庙旺得陷旺平庙旺得陷旺平")),
+    "文昌": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "得庙陷利得庙陷利得庙陷利")),
+    "文曲": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "得庙平旺得庙陷旺得庙陷旺")),
+    "火星": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "陷得庙利陷得庙利陷得庙利")),
+    "铃星": dict(zip("子丑寅卯辰巳午未申酉戌亥",
+                    "陷得庙利陷得庙利陷得庙利")),
+    "擎羊": {"子": "陷", "丑": "庙", "寅": "", "卯": "陷", "辰": "庙", "巳": "",
+             "午": "陷", "未": "庙", "申": "", "酉": "陷", "戌": "庙", "亥": ""},
+    "陀罗": {"子": "", "丑": "庙", "寅": "陷", "卯": "", "辰": "庙", "巳": "陷",
+             "午": "", "未": "庙", "申": "陷", "酉": "", "戌": "庙", "亥": "陷"},
+}
+
+BRIGHT_GRADE = {"庙": 2, "旺": 2, "得": 1, "利": 1, "平": 0, "不": -1, "陷": -2, "": 0}
+
+
+def bright_of(star: str, zhi: str) -> str:
+    return BRIGHT.get(star, {}).get(zhi, "")
 
 
 # --------------------------------------------------------------------------- #
@@ -83,6 +149,14 @@ def xun_kong(gz: str) -> str:
     g, z = GAN.index(gz[0]), ZHI.index(gz[1])
     start = (z - g) % 12
     return ZHI[(start + 10) % 12] + ZHI[(start + 11) % 12]
+
+
+def _xunkong_idx(year_gan_idx: int, year_zhi_idx: int) -> int:
+    """旬空星位：以年支起、逆推至旬首，再取与年支同阴阳之一支。"""
+    idx = (year_zhi_idx + 9 - year_gan_idx + 1) % 12
+    if idx % 2 != year_zhi_idx % 2:
+        idx = (idx + 1) % 12
+    return idx
 
 
 def ziwei_index(day: int, bureau: int) -> int:
@@ -263,10 +337,28 @@ def build(dt: datetime, gender: str = "男", fix_leap: bool = True) -> ZiweiChar
            ("咸池", ZHI_INDEX[xianchi]), ("孤辰", ZHI_INDEX[gu_chen]),
            ("寡宿", ZHI_INDEX[gua_su]), ("破碎", ZHI_INDEX[po_sui]),
            ("截路", ZHI.index(jie_kong[0])), ("空亡", ZHI.index(jie_kong[1]))]
+    # 年干/年支/月/宫位系杂曜（依《紫微斗数全书》通行安法，与 iztro 对照）
+    mi = month - 1                                        # 正月为 0
+    extras = [
+        ("天才", (soul_idx + yz) % 12), ("天寿", (body_idx + yz) % 12),
+        ("天厨", ZHI.index("巳午子巳午申寅午酉亥"[GAN.index(year_gz[0])])),
+        ("蜚廉", ZHI.index("申酉戌巳午未寅卯辰亥子丑"[yz])),
+        ("龙池", (ZHI.index("辰") + yz) % 12), ("凤阁", (ZHI.index("戌") - yz) % 12),
+        ("天官", ZHI.index("未辰巳寅卯酉亥酉戌午"[GAN.index(year_gz[0])])),
+        ("天福", ZHI.index("酉申子亥卯寅午巳午巳"[GAN.index(year_gz[0])])),
+        ("天德", (ZHI.index("酉") + yz) % 12), ("月德", (ZHI.index("巳") + yz) % 12),
+        ("天伤", (soul_idx + 5) % 12), ("天使", (soul_idx + 7) % 12),
+        ("年解", ZHI.index("戌酉申未午巳辰卯寅丑子亥"[yz])),
+        ("解神", ZHI.index("申戌子寅辰午"[mi // 2])),
+        ("阴煞", ZHI.index("寅子戌申午辰"[mi % 6])),
+        ("天月", ZHI.index("戌巳辰寅未卯亥未寅午戌寅"[mi])),
+        ("天巫", ZHI.index("巳申寅亥"[mi % 4])),
+        ("天空", (yz + 1) % 12),
+        ("旬空", _xunkong_idx(GAN.index(year_gz[0]), yz)),
+    ]
+    add += extras
     for name, idx in add:
         palaces[idx].minor.append(name)
-    for z in nk:
-        palaces[ZHI.index(z)].liu_ji.append("旬空")
 
     # 生年四化
     hua = dict(zip(("化禄", "化权", "化科", "化忌"), SIHUA[year_gz[0]]))
@@ -289,13 +381,160 @@ def build(dt: datetime, gender: str = "男", fix_leap: bool = True) -> ZiweiChar
 
 
 # --------------------------------------------------------------------------- #
-# 输出
+# 断语：庙旺、三方四正、格局、四化落宫、限运
 # --------------------------------------------------------------------------- #
-def _stars(p: Palace) -> str:
-    s = " ".join(p.major)
-    if p.minor:
-        s += ("　" if s else "") + " ".join(p.minor)
-    return s or "（空宫）"
+LUCKY = {"左辅", "右弼", "文昌", "文曲", "天魁", "天钺", "禄存", "天马", "三台", "八座",
+         "恩光", "天贵", "台辅", "封诰", "红鸾", "天喜", "天德", "月德", "解神", "年解",
+         "天官", "天福", "天厨", "天才", "天寿", "龙池", "凤阁", "天巫"}
+EVIL = {"擎羊", "陀罗", "火星", "铃星", "地空", "地劫", "天刑", "天姚", "天空", "旬空",
+        "天哭", "天虚", "破碎", "阴煞", "蜚廉", "孤辰", "寡宿", "咸池", "天使", "天伤"}
+
+SANFANG_OFFSETS = (0, 4, 8, 6)          # 本宫、三合两宫、对宫
+
+
+def sanfang(ch: ZiweiChart, idx: int) -> list[Palace]:
+    return [ch.palaces[(idx + o) % 12] for o in SANFANG_OFFSETS]
+
+
+def palace_grade(p: Palace) -> int:
+    """宫位吉凶量化：主星庙旺（±2）、吉曜（+1）、煞曜（-1）、四化（禄权科 +、忌 −）。"""
+    s = sum(BRIGHT_GRADE.get(bright_of(x, p.zhi), 0) for x in p.major)
+    s += sum(1 for x in p.minor if x in LUCKY)
+    s -= sum(1 for x in p.minor if x in EVIL)
+    for tag in p.liu_ji:
+        if "化禄" in tag:
+            s += 2
+        elif "化权" in tag:
+            s += 1
+        elif "化科" in tag:
+            s += 1
+        elif "化忌" in tag:
+            s -= 2
+    return s
+
+
+def patterns(ch: ZiweiChart) -> list[str]:
+    soul = ch.soul_palace
+    idx = ch.soul_idx
+    tri = {x for p in sanfang(ch, idx) for x in p.major}
+    minor_ming = set(soul.minor)
+    allidx = {x for p in ch.palaces for x in p.major}
+    out = []
+
+    if {"紫微", "天府"} <= set(soul.major):
+        out.append("紫府同宫：尊贵持重、器度宽宏，宜居领导之位，一生多助力。")
+    if {"紫微", "天府"} <= tri and not ({"紫微", "天府"} <= set(soul.major)):
+        out.append("紫府朝垣：三方见紫微天府，主格局宏大，得贵人与资源相扶。")
+    if {"七杀", "破军", "贪狼"} <= tri:
+        out.append("杀破狼格：主开创变动，一生起伏大而机会多，宜主动不宜守成。")
+    if {"天机", "太阴", "天同", "天梁"} <= tri:
+        out.append("机月同梁格：宜公职、幕僚、专业与文教，稳中得名，不宜投机。")
+    if {"太阳", "太阴"} <= set(soul.major):
+        out.append("日月同宫：阴阳并济，性情兼刚柔，然易心事反复、内外两难。")
+    if soul.major == ["太阴"] and soul.zhi == "亥":
+        out.append("月朗天门：太阴在亥庙地守命，主清贵、富文才，女命尤佳。")
+    if soul.major == ["太阳"] and soul.zhi in ("卯", "辰"):
+        out.append("日照雷门：太阳卯辰庙旺守命，主光明磊落、早年得志。")
+    if "紫微" in soul.major and len(minor_ming & {"左辅", "右弼", "文昌", "文曲", "天魁", "天钺"}) >= 2:
+        out.append("君臣庆会：紫微得辅弼昌曲魁钺相随，主得众助、位高而稳。")
+    if "巨门" in soul.major and soul.zhi in ("子", "午") and any("化" in t for t in soul.liu_ji):
+        out.append("石中隐玉：巨门子午得化，主先难后成，以专业口才立身。")
+    if {"天府", "天相"} <= tri:
+        out.append("府相朝垣：三方见天府天相，主衣食丰足、处事圆融，得人信任。")
+    if "贪狼" in tri and ({"火星", "铃星"} & {x for p in sanfang(ch, idx) for x in p.minor}):
+        out.append("火贪（铃贪）相逢：主突发之财与横发机遇，来得快亦须防去得快。")
+    if "紫微" in soul.major and soul.zhi == "午":
+        out.append("极向离明：紫微在午守命，主气象恢宏，宜大任而不宜小就。")
+    if not out:
+        out.append("命宫三方无特异组合，格局平平，成败多系于大限流年与自身修为。")
+    return out
+
+
+def sihua_of(gan: str) -> dict:
+    return dict(zip(("化禄", "化权", "化科", "化忌"), SIHUA[gan]))
+
+
+def sihua_landing(ch: ZiweiChart, gan: str) -> list[str]:
+    """四化落宫：某干四化飞入何宫，主该宫事象得失。"""
+    out = []
+    for kind, star in sihua_of(gan).items():
+        p = next((q for q in ch.palaces if star in q.major or star in q.minor), None)
+        if p is None:
+            continue
+        tone = {"化禄": "主财禄、机遇、人缘", "化权": "主权柄、掌控、进取",
+                "化科": "主名誉、文书、贵人", "化忌": "主阻滞、执着、耗损"}[kind]
+        out.append(f"{star}{kind} 入{p.name}（{p.zhi}宫）：{tone}，应在{PALACE_MEANING[p.name]}。")
+    return out
+
+
+XIAOXIAN_START = {"寅": "辰", "午": "辰", "戌": "辰", "申": "戌", "子": "戌", "辰": "戌",
+                  "巳": "未", "酉": "未", "丑": "未", "亥": "丑", "卯": "丑", "未": "丑"}
+
+
+def small_limit(ch: ZiweiChart, year: int) -> tuple[int, int]:
+    """小限：男顺女逆，一岁起于年支所定之宫。返回 (宫位索引, 虚岁)。"""
+    start = ZHI.index(XIAOXIAN_START[ch.year_gz[1]])
+    age = year - ch.when.year + 1
+    step = (age - 1) if ch.gender == "男" else -(age - 1)
+    return (start + step) % 12, age
+
+
+def liunian_palace(ch: ZiweiChart, year: int) -> Palace:
+    """流年宫：太岁所在之宫。"""
+    zhi = ZHI[(year - 1984) % 12]
+    return next(p for p in ch.palaces if p.zhi == zhi)
+
+
+def _star_text(p: Palace, with_bright: bool = True) -> str:
+    if not p.major:
+        return "空宫"
+    if not with_bright:
+        return " ".join(p.major)
+    return " ".join(f"{s}({bright_of(s, p.zhi) or '－'})" for s in p.major)
+
+
+PALACE_RULE = {
+    "夫妻": "主婚姻配偶。见天同、天梁、太阴庙旺者多和顺；见七杀、破军、廉贞加擎羊陀罗者多波折，宜迟婚。",
+    "财帛": "主财源理财。武曲、天府、禄存、化禄守之为财有根；地空地劫同度则财来财去。",
+    "官禄": "主事业功名。紫微、天府、太阳宜公职管理；巨门宜专业口才；天机宜谋划幕僚。",
+    "疾厄": "主健康体质。煞曜聚集则体质偏弱；天月、天刑同度宜防慢性之疾。",
+    "迁移": "主外出际遇。太阳、天马守之宜外出发展；空劫同度则外出多虚耗。",
+    "田宅": "主不动产与家宅。天府、太阴、禄存守之宜置业；空劫则家宅多变动。",
+    "福德": "主福泽精神。天同、天梁、太阴守之享福安逸；贪狼、廉贞则多欲多思。",
+    "父母": "主父母长辈。见吉曜得荫庇；见煞则早年离乡或与长辈缘薄。",
+    "子女": "主子女缘与才艺。天机、文昌文曲守之多聪慧；孤辰寡宿则缘迟。",
+    "兄弟": "主同辈手足。左辅右弼得助；擎羊陀罗则易生争执。",
+    "交友": "主朋友部属。吉曜得众助；煞曜则防小人拖累。",
+}
+
+
+def palace_notes(ch: ZiweiChart) -> list[str]:
+    """重点宫位断语：命、夫妻、财帛、官禄、疾厄、迁移。"""
+    out = []
+    for name in ("夫妻", "财帛", "官禄", "疾厄", "迁移"):
+        p = next(q for q in ch.palaces if q.name == name)
+        stars = _star_text(p)
+        if not p.major:
+            stars += "（借对宫" + _star_text(ch.palaces[(ch.palaces.index(p) + 6) % 12], False) + "）"
+        extra = []
+        lucky = [x for x in p.minor if x in LUCKY and x in ("左辅", "右弼", "文昌", "文曲", "天魁", "天钺", "禄存", "天马")]
+        evil = [x for x in p.minor if x in EVIL]
+        if lucky:
+            extra.append("吉曜见" + "、".join(lucky[:3]))
+        if evil:
+            extra.append("煞曜见" + "、".join(evil[:3]))
+        if p.liu_ji:
+            extra.append("、".join(p.liu_ji))
+        out.append(f"{name}宫（{p.zhi}）：{stars}"
+                   + ("；" + "；".join(extra) if extra else "")
+                   + f"。{PALACE_RULE.get(name, '')}")
+    soul = ch.soul_palace
+    grade = palace_grade(soul)
+    out.insert(0, f"命宫（{soul.zhi}·{soul.gz}）：{_star_text(soul)}；三方四正吉凶分 {grade:+d}"
+                  + ("，庙旺吉曜得力，主气象开展。" if grade >= 4 else
+                     "，吉凶相参，成败在运。" if grade >= 0 else
+                     "，煞忌偏重，宜守成积德、以勤补拙。"))
+    return out
 
 
 def render(ch: ZiweiChart, hour_label: str = "") -> str:
@@ -306,32 +545,61 @@ def render(ch: ZiweiChart, hour_label: str = "") -> str:
          f"　　五行局：{ch.bureau_name}　　命主：{ch.ming_zhu}　　身主：{ch.shen_zhu}"
          f"　　起运：{ch.bureau_num} 岁（{ch.gender}·{'顺行' if ch.forward else '逆行'}）",
          ""]
-    L.append("　　" + pad("宫位", 7) + pad("宫名", 11) + pad("主星", 22)
+    L.append("　　" + pad("宫位", 7) + pad("宫名", 11) + pad("主星（庙旺）", 26)
              + pad("辅星杂曜", 40) + pad("四化", 10) + "大限")
     for k in range(12):
         p = ch.palaces[(ch.soul_idx + (k if ch.forward else -k)) % 12]
         tag = "（身）" if (p.is_body and not p.is_soul) else ""
         dec = f"{p.decade[0]}-{p.decade[1]}" if p.decade else ""
         L.append("　　" + pad(p.zhi + "宫", 7) + pad(p.name + tag, 11)
-                 + pad(" ".join(p.major) or "－", 22)
+                 + pad(_star_text(p), 26)
                  + pad(" ".join(p.minor), 40)
                  + pad(" ".join(p.liu_ji), 10) + dec)
     L.append("")
-    san = [ch.palaces[(ch.soul_idx + o) % 12] for o in (0, 4, 8, 6)]
-    L.append("　【命宫三方四正】" + "　".join(
-        f"{p.name}{p.zhi}：{' '.join(p.major) or '空宫'}" for p in san))
+    san = sanfang(ch, ch.soul_idx)
+    L.append("　【命宫三方四正】" + "　".join(f"{p.name}{p.zhi}：{_star_text(p)}" for p in san))
     L.append(f"　【生年四化】{ch.year_gz[0]}干："
-             + "、".join(f"{s}{k}" for k, s in zip(("化禄", "化权", "化科", "化忌"), SIHUA[ch.year_gz[0]])))
-    ming = soul.major or ch.palaces[(ch.soul_idx + 6) % 12].major
+             + "、".join(f"{s}{k}" for k, s in sihua_of(ch.year_gz[0]).items()))
     if soul.major:
-        L.append("　【命宫主星】" + "、".join(f"{s}（{STAR_MEANING[s]}）" for s in soul.major))
+        L.append("　【命宫主星】" + "、".join(
+            f"{s}（{bright_of(s, soul.zhi)}·{STAR_MEANING[s]}）" for s in soul.major))
     else:
+        opp = ch.palaces[(ch.soul_idx + 6) % 12]
         L.append("　【命宫主星】命宫无主星，借对宫迁移："
-                 + "、".join(f"{s}（{STAR_MEANING[s]}）" for s in ming))
-    for star, meaning in STAR_MEANING.items():
-        p = next((q for q in ch.palaces if star in q.major), None)
-        if p is not None:
-            L.append(f"　　· {star}在{p.name}（{p.zhi}宫）：{meaning}")
-    L += ["", "　※ 紫微斗数以命宫、三方四正、四化为纲，须参大限流年方见应期。"
-              "本程序依《紫微斗数全书》体例安星，未及星曜庙旺利陷与流年盘，结论仅供参考。"]
+                 + "、".join(f"{s}（{bright_of(s, opp.zhi)}·{STAR_MEANING[s]}）" for s in opp.major)
+                 + "　※ 空宫借星，力量减半，须参本宫辅曜与对宫。")
+    L.append("")
+    L.append("　【格局】")
+    L += [f"　　· {x}" for x in patterns(ch)]
+    L.append("")
+    L.append("　【生年四化落宫】")
+    L += [f"　　· {x}" for x in sihua_landing(ch, ch.year_gz[0])]
+    L.append("")
+    L.append("　【宫位要义】")
+    L += [f"　　· {x}" for x in palace_notes(ch)]
+    L.append("")
+    now = datetime.now().year
+    age_now = now - ch.when.year + 1
+    L.append(f"　【限运】今 {now} 年（虚岁 {age_now}）")
+    cur = next((p for p in ch.palaces if p.decade and p.decade[0] <= age_now <= p.decade[1]), None)
+    if cur:
+        L.append(f"　　大限：{cur.name}宫（{cur.zhi}·{cur.gz}）{cur.decade[0]}-{cur.decade[1]} 岁　"
+                 + f"主星 {_star_text(cur)}　大限四化："
+                 + "、".join(f"{s}{k}" for k, s in sihua_of(cur.gan).items()))
+        L.append("　　　　" + "；".join(sihua_landing(ch, cur.gan)[:2]))
+    li = liunian_palace(ch, now)
+    lgz = GAN[(now - 1984) % 10] + ZHI[(now - 1984) % 12]
+    L.append(f"　　流年：{now} 干支 {lgz}，流年宫 {li.name}（{li.zhi}）主星 {_star_text(li)}；"
+             "流年四化：" + "、".join(f"{s}{k}" for k, s in sihua_of(lgz[0]).items()))
+    sidx, age = small_limit(ch, now)
+    sp = ch.palaces[sidx]
+    L.append(f"　　小限：{sp.zhi}宫（{sp.name}）主星 {_star_text(sp)}")
+    L.append("　　近五年流年宫：")
+    for y in range(now, now + 5):
+        lp = liunian_palace(ch, y)
+        g = GAN[(y - 1984) % 10]
+        L.append(f"　　　{y} {g}{ZHI[(y - 1984) % 12]}　{lp.name}（{lp.zhi}）{_star_text(lp)}"
+                 f"　四化 " + "、".join(f"{s}{k}" for k, s in sihua_of(g).items()))
+    L += ["", "　※ 紫微斗数以命宫、三方四正、四化为纲，庙旺利陷定星力强弱，大限流年见应期。"
+              "本程序安星与 iztro 逐格核对一致，然推论属规则化引申，仅供参考。"]
     return "\n".join(L)

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """八字排盘：四柱、十神、藏干、旺衰、格局、用神、神煞、大运流年.
 
 学理依据:
@@ -126,6 +126,7 @@ class Chart:
     forward: bool
     hour_label: str = ''
     notes: list = field(default_factory=list)
+    strength_parts: dict = field(default_factory=dict)
 
 
 def _pillar(name, gan, zhi, day_gan, is_day=False) -> Pillar:
@@ -197,6 +198,22 @@ def _shensha(year_gz: str, month_zhi: str, day_gan: str, pillars: list) -> dict:
             add(pname, "寡宿")
         if pillars[2].xunkong and z in pillars[2].xunkong:
             add(pname, "空亡")
+    # 日柱系神煞
+    day_gz = pillars[2].gz
+    if day_gz in C.KUIGANG:
+        add("日", "魁罡")
+    if day_gz in C.RIDE:
+        add("日", "日德")
+    if day_gz in C.YINCHA_YANGCUO:
+        add("日", "阴差阳错")
+    if day_gz in C.GU_LUAN:
+        add("日", "孤鸾煞")
+    if day_gz in C.SHI_E_DABAI:
+        add("日", "十恶大败")
+    season = {"寅": "春", "卯": "春", "辰": "春", "巳": "夏", "午": "夏", "未": "夏",
+              "申": "秋", "酉": "秋", "戌": "秋", "亥": "冬", "子": "冬", "丑": "冬"}.get(month_zhi, "")
+    if season and day_gz == C.TIANSHE.get(season):
+        add("日", "天赦")
     return out
 
 
@@ -218,20 +235,25 @@ def _wuxing_stats(pillars: list) -> tuple[dict, dict]:
     return plain, {k: round(v, 2) for k, v in weighted.items()}
 
 
-def _strength(day_gan: str, pillars: list, month_zhi: str) -> tuple[float, str]:
+def _strength(day_gan: str, pillars: list, month_zhi: str) -> tuple[float, str, dict]:
     """日主旺衰：得令、得地、得势三才计分（《滴天髓》气势论 / 《子平真诠》）。
 
     以 50 分为中和基准：月令定格局之势（±38），地支通根（得地）、天干比印官财（得势）加减，
-    回归《渊海子平》「月令为提纲，得令者旺」之旨。
+    回归《渊海子平》「月令为提纲，得令者旺」之旨。返回 (得分, 评语, 三要明细)。
     """
     me = C.GAN_WUXING[day_gan]
     score = 50.0
+    parts = {}
 
     # 一、得令：月支本气与日主之生克
     mb = C.ZHI_CANG[month_zhi][0]
-    score += {"同": 38.0, "养": 28.0, "生": -12.0, "克": -26.0, "攻": -38.0}[_rel(me, C.GAN_WUXING[mb])]
+    dling = {"同": 38.0, "养": 28.0, "生": -12.0, "克": -26.0, "攻": -38.0}[_rel(me, C.GAN_WUXING[mb])]
+    score += dling
+    parts["得令"] = (dling, f"月令{month_zhi}本气{mb}（{_SS_REL[_rel(me, C.GAN_WUXING[mb])]}）")
 
     # 二、得地：地支藏干通根（本气/中气/余气，月支加倍）
+    ddi = 0.0
+    roots = []
     for p in pillars:
         if p.unknown:
             continue
@@ -239,22 +261,32 @@ def _strength(day_gan: str, pillars: list, month_zhi: str) -> tuple[float, str]:
             v = (8.0, 4.0, 2.0)[min(i, 2)] * (1.5 if p.name == "月" else 1.0)
             rel = _rel(me, C.GAN_WUXING[h])
             if rel == "同":
-                score += v
+                ddi += v
+                roots.append(f"{p.name}支{p.zhi}藏{h}")
             elif rel == "养":
-                score += v * 0.7
+                ddi += v * 0.7
             elif rel == "攻":
-                score -= v * 0.7
+                ddi -= v * 0.7
             else:
-                score -= v * 0.5
+                ddi -= v * 0.5
+    score += ddi
+    parts["得地"] = (ddi, "通根于 " + "、".join(roots[:4]) if roots else "地支无同类之根")
 
     # 三、得势：天干比劫印星帮身，官杀财食伤耗身
+    dshi = 0.0
+    helpers = []
     for p in pillars:
         if p.is_day or not p.gan:
             continue
         rel = _rel(me, C.GAN_WUXING[p.gan])
-        score += {"同": 7.0, "养": 5.0, "生": -5.0, "克": -4.0, "攻": -7.0}[rel]
+        v = {"同": 7.0, "养": 5.0, "生": -5.0, "克": -4.0, "攻": -7.0}[rel]
+        dshi += v
+        if v > 0:
+            helpers.append(f"{p.name}干{p.gan}")
+    score += dshi
+    parts["得势"] = (dshi, "天干帮身者 " + "、".join(helpers) if helpers else "天干无帮身之神")
 
-    score = max(0.0, min(100.0, score))
+    score = max(1.0, min(99.0, score))
     if score >= 68:
         txt = "身强（旺）"
     elif score >= 58:
@@ -263,9 +295,14 @@ def _strength(day_gan: str, pillars: list, month_zhi: str) -> tuple[float, str]:
         txt = "中和"
     elif score >= 34:
         txt = "偏弱"
-    else:
+    elif score >= 20:
         txt = "身弱"
-    return round(score, 1), txt
+    else:
+        txt = "极弱（从弱之象）"
+    return round(score, 1), txt, parts
+
+
+_SS_REL = {"同": "比劫", "养": "印星", "生": "食伤", "克": "财星", "攻": "官杀"}
 
 
 def _geju(day_gan: str, pillars: list, month_zhi: str, ratio: float) -> tuple[str, str]:
@@ -357,7 +394,7 @@ def build_chart(name: str, gender: str, dt: datetime, use_true_solar: bool = Fal
 
     plain, weighted = _wuxing_stats(pillars)
     missing = [w for w in WUXING if plain[w] == 0]
-    ratio, stext = _strength(day_gan, pillars, ec.getMonthZhi())
+    ratio, stext, sparts = _strength(day_gan, pillars, ec.getMonthZhi())
     geju, gnote = _geju(day_gan, pillars, ec.getMonthZhi(), ratio)
     yong, ji, yn = _yongshen(day_gan, ec.getMonthZhi(), ratio, pillars)
     shensha = _shensha(ec.getYear(), ec.getMonthZhi(), day_gan, pillars)
@@ -390,6 +427,7 @@ def build_chart(name: str, gender: str, dt: datetime, use_true_solar: bool = Fal
         strength=ratio, strength_text=stext, geju=geju, geju_note=gnote,
         yongshen=yong, jishen=ji, tiaohou=yn, shensha=shensha, dayun=dayun,
         start_text=start_text, forward=yun.isForward(),
+        strength_parts=sparts,
     )
 
 
@@ -429,6 +467,11 @@ def render_chart(ch: Chart) -> str:
     L.append(f"　　　　五行{'齐全' if not ch.missing else '缺' + '、'.join(ch.missing)}")
     L.append("")
     L.append(f"【日主】{ch.day_master}{ch.day_master_wx}　{ch.strength_text}　得分 {ch.strength}（50 为中和）")
+    if ch.strength_parts:
+        items = list(ch.strength_parts.items())
+        L.append("　　三要：" + "　".join(f"{k}{v[0]:+.1f}（{v[1]}）" for k, v in items[:2]))
+        if len(items) > 2:
+            L.append("　　　　　" + "　".join(f"{k}{v[0]:+.1f}（{v[1]}）" for k, v in items[2:]))
     L.append(f"【格局】{ch.geju}　{ch.geju_note}")
     L.append(f"【用神】{ch.yongshen}　【忌神】{ch.jishen}")
     L.append(f"　　　　{ch.tiaohou}")
@@ -453,6 +496,9 @@ def render_chart(ch: Chart) -> str:
                  f"　行 {cur.gan_zhi} 大运（{cur.shishen}）")
     else:
         L.append(f"【今年】{now}年 流年 {ln}（{shishen(ch.day_master, ln[0])}·{_yun_luck(ch, ln)}）")
+    L.append("")
+    from .analysis import render_extra
+    L += render_extra(ch)
     L.append("")
     L.append("【说明】本程序依《渊海子平》《子平真诠》《滴天髓》《穷通宝典》《三命通会》之理排演，")
     L.append("　　　　命理属传统文化，结论仅供参考，不作人生决策之唯一依据。")

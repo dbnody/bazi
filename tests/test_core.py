@@ -97,8 +97,11 @@ male = cht.build_chart("男", "男", datetime(1990, 5, 12, 14, 30))
 female = cht.build_chart("女", "女", datetime(1992, 8, 3, 9, 15))
 res = hehun.hehun(male, female)
 check("合婚分数区间", 0 <= res.score <= 100, True)
-check("合婚分项数", len(res.sections), 6)
+check("合婚分项数", len(res.sections), 8)
 check("合婚满分", sum(s[3] for s in res.sections), 100)
+check("合婚紫微节点分", res.sections[6][3], 9)
+check("合婚婚期节点分", res.sections[7][3], 5)
+check("合婚婚期有结论", any("六合" in x or "流年" in x for x in res.sections[7][1]), True)
 
 # ---- 生物钟 -----------------------------------------------------------------
 b = datetime(1990, 5, 12, 14, 30)
@@ -172,6 +175,31 @@ for dt_s, g, soul, body, bureau in [
     check(f"紫微 iztro 向量 {dt_s}", (ziwei.ZHI[c.soul_idx], ziwei.ZHI[c.body_idx], c.bureau_name),
           (soul, body, bureau))
 
+# 断语层：庙旺、三方四正、格局、四化落宫、小限、流年宫
+check("紫微 太阴在戌为旺", ziwei.bright_of("太阴", "戌"), "旺")
+check("紫微 太阳在亥为陷", ziwei.bright_of("太阳", "亥"), "陷")
+check("紫微 紫微在午为庙", ziwei.bright_of("紫微", "午"), "庙")
+check("紫微 擎羊在酉为陷", ziwei.bright_of("擎羊", "酉"), "陷")
+check("紫微 三方四正取四宫", [p.zhi for p in ziwei.sanfang(zw1, zw1.soul_idx)],
+      ["戌", "寅", "午", "辰"])
+check("紫微 命宫吉凶评分", ziwei.palace_grade(zw1.soul_palace), 2)
+check("紫微 机月同梁格", any("机月同梁" in x for x in ziwei.patterns(zw1)), True)
+check("紫微 生年四化口诀", ziwei.sihua_of("庚"), {"化禄": "太阳", "化权": "武曲",
+                                              "化科": "太阴", "化忌": "天同"})
+_land = [x.split(" 入")[0] for x in ziwei.sihua_landing(zw1, "庚")]
+check("紫微 庚干四化落宫数", len(_land), 4)
+check("紫微 太阴化科落命宫", any("太阴化科" in x and "命宫" in x
+                              for x in ziwei.sihua_landing(zw1, "庚")), True)
+check("紫微 小限男命(37岁)", ziwei.small_limit(zw1, 2026), (4, 37))
+check("紫微 流年宫2026", ziwei.liunian_palace(zw1, 2026).zhi, "午")
+check("紫微 流年干支2026", ziwei.GAN[(2026 - 1984) % 10] + ziwei.ZHI[(2026 - 1984) % 12],
+      "丙午")
+check("紫微 渲染含格局", "【格局】" in ziwei.render(zw1), True)
+check("紫微 渲染含庙旺", "太阴(旺)" in ziwei.render(zw1), True)
+check("紫微 渲染含小限", "小限" in ziwei.render(zw1), True)
+_zw_txt = ziwei.render(zw1)
+check("紫微 近五年流年表", all(str(y) in _zw_txt for y in range(2026, 2031)), True)
+
 # ---- 六爻 -------------------------------------------------------------------
 QIAN = liuyao.GUAS[(1,) * 6]
 check("六爻 乾为天宫位", (QIAN.name, QIAN.palace, QIAN.shi, QIAN.ying), ("乾为天", "乾", 6, 3))
@@ -204,6 +232,26 @@ check("六爻 用神取财", c1.yongshen.startswith("妻财"), True)
 check("六爻 六阳静卦", liuyao.build("手动", [7] * 6, datetime(2026, 11, 17, 10, 30),
                                 "事业", day_gz="乙未", month_gz="己亥",
                                 year_gz="丙午").bian, None)
+# 断语层：卦义、神煞、进退化、世应、应期
+check("六爻 卦义齐备", len(liuyao.GUA_YI), 64)
+check("六爻 卦义与卦名一致", set(liuyao.GUA_YI), {g.name for g in liuyao.GUAS.values()})
+check("六爻 世应比和", "比和" in " ".join(c1.details["shiying"]), True)
+check("六爻 应期有结论", len(c1.details["yingqi"]) >= 1, True)
+_jin = liuyao.JIN["寅"]
+check("六爻 寅化卯为进", _jin, "卯")
+check("六爻 卯化寅为退", liuyao.TUI["卯"], "寅")
+_shen = liuyao._shensha_of("申", "乙", "未")
+check("六爻 乙日申为天乙", "天乙" in _shen, True)
+check("六爻 未日申为劫煞", "劫煞" in _shen, True)
+check("六爻 未日巳为驿马", "驿马" in liuyao._shensha_of("巳", "乙", "未"), True)
+check("六爻 甲子日戌亥空", liuyao.kong_wang("甲子"), "戌亥")
+_c2 = liuyao.build("手动", [9, 9, 9, 9, 9, 9], datetime(2026, 11, 17, 10, 30), "财运",
+                   day_gz="乙未", month_gz="己亥", year_gz="丙午")
+check("六爻 六爻全动本卦", _c2.ben.name, "乾为天")
+check("六爻 六爻全动变卦", _c2.bian.name, "坤为地")
+check("六爻 全动有卦义两则", len(_c2.details["guayi"]), 2)
+check("六爻 渲染含神煞", "【神煞】" in liuyao.render(c1), True)
+check("六爻 渲染含应期", "【应期】" in liuyao.render(c1), True)
 check("六爻 摇钱取值", set(liuyao.cast_coins()) <= {6, 7, 8, 9}, True)
 check("六爻 输入解析", liuyao.from_coins_text("789789"), [7, 8, 9, 7, 8, 9])
 try:
